@@ -1,0 +1,168 @@
+from flask import Flask, render_template_string
+from datetime import datetime
+
+app = Flask(__name__)
+
+business_info = {
+    "name": "Sunrise Café",
+    "description": "Fresh Coffee | Delicious Bites | Cozy Vibes",
+    "services": [
+        {
+            "name": "Coffee & Espresso",
+            "details": "Fresh coffee, cappuccino, latte",
+            "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93"
+        },
+        {
+            "name": "Pastries",
+            "details": "Croissants, muffins, cakes",
+            "image": "https://images.unsplash.com/photo-1542826438-bd32f43d626f"
+        },
+        {
+            "name": "Breakfast",
+            "details": "Pancakes, eggs, sandwiches",
+            "image": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0"
+        }
+    ],
+    "about": "Serving happiness since 2010 with love and quality ingredients.",
+    "contact": {
+        "phone": "15551234567",
+        "maps": "https://maps.google.com/maps?q=coffee&t=&z=13&ie=UTF8&iwloc=&output=embed"
+    }
+}
+
+template = """
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ business.name }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { margin:0; font-family: 'Segoe UI'; background:#fafafa; }
+
+/* HERO */
+.hero {
+    background: url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb') center/cover;
+    height: 90vh;
+    color: white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+}
+.hero h1 { font-size: 3rem; }
+.hero p { font-size: 1.2rem; }
+
+/* NAV */
+nav {
+    background:black;
+    text-align:center;
+    padding:10px;
+}
+nav a {
+    color:white;
+    margin:10px;
+    text-decoration:none;
+}
+
+/* CARDS */
+.container { padding:40px; }
+.cards {
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+.card {
+    width:280px;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+.card:hover { transform: scale(1.05); }
+
+.card img { width:100%; height:180px; object-fit:cover; }
+.card h3 { margin:10px; }
+.card p { margin:10px; color:#555; }
+
+/* ABOUT */
+.about { text-align:center; padding:40px; }
+
+/* CONTACT */
+.contact { text-align:center; padding:40px; }
+.btn {
+    background:#25D366;
+    padding:10px 15px;
+    color:white;
+    border-radius:5px;
+    text-decoration:none;
+}
+
+/* FOOTER */
+footer {
+    background:black;
+    color:white;
+    text-align:center;
+    padding:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="hero">
+    <h1>{{ business.name }}</h1>
+    <p>{{ business.description }}</p>
+</div>
+
+<nav>
+    <a href="#menu">Menu</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+</nav>
+
+<div class="container" id="menu">
+    <h2 style="text-align:center;">Our Menu</h2>
+    <div class="cards">
+        {% for item in business.services %}
+        <div class="card">
+            <img src="{{ item.image }}">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.details }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="about" id="about">
+    <h2>About Us</h2>
+    <p>{{ business.about }}</p>
+</div>
+
+<div class="contact" id="contact">
+    <h2>Contact</h2>
+    <a class="btn" href="https://wa.me/{{ business.contact.phone }}" target="_blank">
+        Chat on WhatsApp
+    </a>
+    <br><br>
+    <iframe src="{{ business.contact.maps }}" width="90%" height="300"></iframe>
+</div>
+
+<footer>
+    © {{ year }} {{ business.name }}
+</footer>
+
+</body>
+</html>
+"""
+
+@app.route("/")
+def home():
+    return render_template_string(template, business=business_info, year=datetime.now().year)
+
+if __name__ == "__main__":
+    app.run(debug=True)
