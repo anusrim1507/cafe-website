@@ -72,7 +72,3 @@ README.md
 A modern café UI with menu cards, cart system, and admin dashboard.
 
 ---
-
-## 👨‍💻 Author
-
----
